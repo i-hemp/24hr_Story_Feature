@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PlusCard from "./PlusCard";
 
 const App = () => {
   const [pluses, setPluses] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // handle image file input directly
+  // handle image file input 
   const handleAddButton = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -24,14 +24,19 @@ const App = () => {
     setSelectedImage(image);
   };
 
-  const closeModal = () => setSelectedImage(null);
+  // Auto-close modal after 3 seconds
+  useEffect(() => {
+    if (selectedImage) {
+      setTimeout(() => setSelectedImage(null), 3000);
+    }
+  }, [selectedImage]);
 
   return (
     <div className="flex flex-wrap gap-4 p-10">
-      {/* default static card */}
-      <PlusCard id={0} content={"/file.svg"} />
+      {/* Default static card */}
+      <PlusCard id={0} content={"/contact-women.svg"} />
 
-      {/* dynamic uploaded cards */}
+      {/* Dynamic uploaded cards */}
       {pluses.map((plus) => (
         <PlusCard
           key={plus.id}
@@ -41,7 +46,7 @@ const App = () => {
         />
       ))}
 
-      {/* visible file input as "+" */}
+      {/* File input as "+" button */}
       <label className="cursor-pointer mt-11 ml-5">
         <img
           src="/plus.svg"
@@ -57,29 +62,15 @@ const App = () => {
         />
       </label>
 
-      {/* image popup modal */}
+      {/* Popup Modal */}
       {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-white p-4 rounded-2xl shadow-lg max-w-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-2xl shadow-lg max-w-xl animate-fadeIn">
             <img
               src={selectedImage}
               alt="Selected"
               className="rounded-lg max-h-[80vh] max-w-[80vw] object-contain"
             />
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={closeModal}
-                className="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700"
-              >
-                Close
-              </button>
-            </div>
           </div>
         </div>
       )}
